@@ -1,13 +1,23 @@
 package com.study.ndk35_opencv_study
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.googlecode.tesseract.android.TessBaseAPI
 import com.study.ndk35_opencv_study.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    private var baseApi: TessBaseAPI? = null
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,13 +27,33 @@ class MainActivity : AppCompatActivity() {
 
         // Example of a call to a native method
         binding.sampleText.text = stringFromJNI()
+        coroutineScope.launch {
+            initTess()
+        }
     }
 
-    /**
-     * A native method that is implemented by the 'ndk35_opencv_study' native library,
-     * which is packaged with this application.
-     */
-    external fun stringFromJNI(): String
+    private external fun stringFromJNI(): String
+
+    private fun initTess() {
+        baseApi = TessBaseAPI()
+        try{
+            val inputStream = assets.open("eng.traineddata")
+            val file = File.createTempFile("eng", "traineddata")
+            if (!file.exists()){
+                file.parentFile?.mkdirs()
+                val fos = FileOutputStream(file)
+                val buffer = ByteArray(1024)
+                while (inputStream.read(buffer) != -1) {
+                    fos.write(buffer)
+                }
+                fos.close()
+            }
+            inputStream.close()
+            baseApi?.init("", "eng")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     companion object {
         // Used to load the 'ndk35_opencv_study' library on application startup.
