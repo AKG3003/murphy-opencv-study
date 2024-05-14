@@ -1,6 +1,9 @@
 package com.study.ndk35_opencv_study
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.googlecode.tesseract.android.TessBaseAPI
 import com.study.ndk35_opencv_study.databinding.ActivityMainBinding
@@ -32,14 +35,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        baseApi?.end()
+    }
+
+    public fun recognition(view: View) {
+        // 应该吧native的图片传入，这里凑合着实例。
+        val result = Bitmap.createBitmap(199, 199, Bitmap.Config.ARGB_8888)
+        baseApi?.setImage(result)
+        baseApi?.utF8Text // 得到文字识别的结果
+        baseApi?.clear()
+    }
+
     private external fun stringFromJNI(): String
 
     private fun initTess() {
         baseApi = TessBaseAPI()
-        try{
+        try {
             val inputStream = assets.open("eng.traineddata")
             val file = File.createTempFile("eng", "traineddata")
-            if (!file.exists()){
+            if (!file.exists()) {
                 file.parentFile?.mkdirs()
                 val fos = FileOutputStream(file)
                 val buffer = ByteArray(1024)
