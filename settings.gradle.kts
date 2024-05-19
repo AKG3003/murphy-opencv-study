@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "NDK35_opencv_study"
 include(":app")
+include(":opencv")

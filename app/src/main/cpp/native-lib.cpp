@@ -22,13 +22,13 @@ stringFromJNI(
     return env->NewStringUTF(hello.c_str());
 }
 
-//extern "C"
-//JNIEXPORT void JNICALL
-//Java_org_opencv_android_Utils_nBitmapToMat2(JNIEnv *env, jobject instance, jobject bitmap,
-//                                            jlong m_addr, jboolean needUnPremultiplyAlpha);
-//extern "C"
-//JNIEXPORT void JNICALL
-//Java_org_opencv_android_Utils_nMatToBitmap2(JNIEnv *env, jobject instance, jlong m_addr, jobject bitmap);
+extern "C"
+JNIEXPORT void JNICALL
+Java_org_opencv_android_Utils_nBitmapToMat2(JNIEnv *env, jobject instance, jobject bitmap,
+                                            jlong m_addr, jboolean needUnPremultiplyAlpha);
+extern "C"
+JNIEXPORT void JNICALL
+Java_org_opencv_android_Utils_nMatToBitmap2(JNIEnv *env, jobject instance, jlong m_addr, jobject bitmap);
 
 jobject createBitmap(JNIEnv *env, Mat srcData, jobject config) {
     //获取Bitmap类
