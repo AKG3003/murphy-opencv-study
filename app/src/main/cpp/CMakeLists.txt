@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("ndk35_opencv_study")
 
-set(OPENCV ${CMAKE_SOURCE_DIR}/include)
-message(OPENCV: ${OPENCV})
+#set(OPENCV ${CMAKE_SOURCE_DIR}/opencv3)
+set(OPENCV ${CMAKE_SOURCE_DIR}/opencv4)
+#message(OPENCV: ${OPENCV})
 
 include_directories(${OPENCV})
 
@@ -20,8 +21,6 @@ endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L${CMAKE_SOURCE_DIR}/../jniLibs/${STUDY_ABI}")
 
-include_directories(include)
-
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         native-lib.cpp)
@@ -30,5 +29,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
         android
         log
-        opencv_java3
+#        opencv_java3
+        opencv_java4
 )

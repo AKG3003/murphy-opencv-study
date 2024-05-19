@@ -17,13 +17,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
 
-//        externalNativeBuild {
-//            cmake {
-//                cppFlags.add("-std=c++11")
-//                abiFilters.add("arm64-v8a")
-//                arguments("-DANDROID_STL=c++_shared")
-//            }
-//        }
+        externalNativeBuild {
+            cmake {
+                cppFlags.add("-std=c++11")
+                abiFilters.add("armeabi-v7a")
+                arguments("-DANDROID_STL=c++_shared")
+            }
+        }
 
         ndk {
             abiFilters.add("armeabi-v7a")
