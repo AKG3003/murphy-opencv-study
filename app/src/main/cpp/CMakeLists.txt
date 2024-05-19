@@ -15,7 +15,7 @@ message(SOURCES: ${SOURCES})
 if (DEFINED ANDROID_ABI)
     set(STUDY_ABI ${ANDROID_ABI})
 else ()
-    set(STUDY_ABI "arm64-v8a")
+    set(STUDY_ABI "armeabi-v7a")
 endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L${CMAKE_SOURCE_DIR}/../jniLibs/${STUDY_ABI}")

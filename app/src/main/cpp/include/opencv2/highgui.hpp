@@ -362,7 +362,7 @@ If there are several HighGUI windows, any of them can be active.
 
 @param delay Delay in milliseconds. 0 is the special value that means "forever".
  */
-CV_EXPORTS_W int waitKey(int delay = 0);
+CV_EXPORTS_W int /**/waitKey(int delay = 0);
 
 /** @brief Displays an image in the specified window.
 

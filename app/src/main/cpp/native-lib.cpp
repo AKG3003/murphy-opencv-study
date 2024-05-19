@@ -22,13 +22,13 @@ stringFromJNI(
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_org_opencv_android_Utils_nBitmapToMat2(JNIEnv *env, jobject instance, jobject bitmap,
-                                            jlong m_addr, jboolean needUnPremultiplyAlpha);
-extern "C"
-JNIEXPORT void JNICALL
-Java_org_opencv_android_Utils_nMatToBitmap2(JNIEnv *env, jobject instance, jlong m_addr, jobject bitmap);
+//extern "C"
+//JNIEXPORT void JNICALL
+//Java_org_opencv_android_Utils_nBitmapToMat2(JNIEnv *env, jobject instance, jobject bitmap,
+//                                            jlong m_addr, jboolean needUnPremultiplyAlpha);
+//extern "C"
+//JNIEXPORT void JNICALL
+//Java_org_opencv_android_Utils_nMatToBitmap2(JNIEnv *env, jobject instance, jlong m_addr, jobject bitmap);
 
 jobject createBitmap(JNIEnv *env, Mat srcData, jobject config) {
     //获取Bitmap类
@@ -46,7 +46,6 @@ jobject createBitmap(JNIEnv *env, Mat srcData, jobject config) {
 void handleImage2(Mat &src) {
     Mat src_image = src;
     Mat dst_img;
-    imshow("src", src_image);
 
     Mat dst;
 
@@ -111,9 +110,12 @@ void do_start(JNIEnv *env, jobject instance, jstring path) {
 
     Mat src = imread(global_path);
     handleImage2(src);
-    waitKey(0);
 
     env->ReleaseStringUTFChars(path, path_);
+}
+
+void capture_face(){
+    VideoCapture capture(0);
 }
 
 
