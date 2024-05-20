@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Example of a call to a native method
-        binding.sampleText.text = stringFromJNI()
+//        binding.sampleText.text = stringFromJNI()
         coroutineScope.launch {
             initTess()
         }
@@ -45,8 +45,6 @@ class MainActivity : AppCompatActivity() {
         baseApi?.utF8Text // 得到文字识别的结果
         baseApi?.clear()
     }
-
-    private external fun stringFromJNI(): String
 
     private fun initTess() {
         baseApi = TessBaseAPI()
@@ -66,13 +64,6 @@ class MainActivity : AppCompatActivity() {
             baseApi?.init("", "eng")
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    companion object {
-        // Used to load the 'ndk35_opencv_study' library on application startup.
-        init {
-            System.loadLibrary("ndk35_opencv_study")
         }
     }
 }

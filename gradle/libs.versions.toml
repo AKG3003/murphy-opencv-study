@@ -10,6 +10,9 @@ kotlinxCoroutinesAndroid = "1.6.4"
 material = "1.10.0"
 constraintlayout = "2.1.4"
 tessTwo = "9.1.0"
+cameraCamera2 = "1.4.0-beta01"
+cameraCore = "1.4.0-beta01"
+cameraLifecycle = "1.4.0-beta01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -21,6 +24,9 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 tess-two = { group = "com.rmtheis", name = "tess-two", version.ref = "tessTwo" }
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "cameraCamera2" }
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

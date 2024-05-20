@@ -31,4 +31,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         log
 #        opencv_java3
         opencv_java4
+        android
 )

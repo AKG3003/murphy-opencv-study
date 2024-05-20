@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <string>
 #include <opencv2/opencv.hpp>
+#include "FaceTracker.h"
 
 #define DEFAULT_CARD_WIDTH 640
 #define DEFAULT_CARD_HEIGHT 480
@@ -28,7 +29,8 @@ Java_org_opencv_android_Utils_nBitmapToMat2(JNIEnv *env, jobject instance, jobje
                                             jlong m_addr, jboolean needUnPremultiplyAlpha);
 extern "C"
 JNIEXPORT void JNICALL
-Java_org_opencv_android_Utils_nMatToBitmap2(JNIEnv *env, jobject instance, jlong m_addr, jobject bitmap);
+Java_org_opencv_android_Utils_nMatToBitmap2(JNIEnv *env, jobject instance, jlong m_addr,
+                                            jobject bitmap);
 
 jobject createBitmap(JNIEnv *env, Mat srcData, jobject config) {
     //获取Bitmap类
@@ -103,24 +105,81 @@ void handleImage2(Mat &src) {
     }
 }
 
-void do_start(JNIEnv *env, jobject instance, jstring path) {
+//void do_start(JNIEnv *env, jobject instance, jstring path) {
+//    const char *path_ = env->GetStringUTFChars(path, 0);
+//    char *global_path = new char[strlen(path_) + 1];
+//    strcpy(global_path, path_);
+//
+//    Mat src = imread(global_path);
+//    handleImage2(src);
+//
+//    env->ReleaseStringUTFChars(path, path_);
+//}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+do_create_obj(JNIEnv *env, jobject instance, jstring path) {
     const char *path_ = env->GetStringUTFChars(path, 0);
     char *global_path = new char[strlen(path_) + 1];
     strcpy(global_path, path_);
 
-    Mat src = imread(global_path);
-    handleImage2(src);
+    FaceTracker *tracker = new FaceTracker(global_path);
 
     env->ReleaseStringUTFChars(path, path_);
+    return 0;
 }
 
-void capture_face(){
-    VideoCapture capture(0);
+extern "C"
+JNIEXPORT void JNICALL
+do_destory_obj(JNIEnv *env, jobject instance, jlong obj_ptr) {
+    FaceTracker *tracker = (FaceTracker *) obj_ptr;
+    tracker->tracker->stop();
+//    delete tracker;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+do_set_surface(JNIEnv *env, jobject instance, jlong obj_ptr, jobject surface) {
+    ANativeWindow *window = ANativeWindow_fromSurface(env, surface);
+    FaceTracker *tracker = (FaceTracker *) obj_ptr;
+    tracker->setANativeWindow(window);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+do_start(JNIEnv *env, jobject instance, jlong obj_ptr) {
+    FaceTracker *tracker = (FaceTracker *) obj_ptr;
+    tracker->tracker->run();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+do_stop(JNIEnv *env, jobject instance, jlong obj_ptr) {
+    FaceTracker *tracker = (FaceTracker *) obj_ptr;
+    tracker->tracker->stop();
+//    delete tracker;
+}
+
+extern "C"
+JNIEXPORT jbyteArray JNICALL
+do_native_detect(JNIEnv *env, jobject instance, jlong thiz, jbyteArray input_image, jint width, jint height, jint rotation_degree) {
+    FaceTracker *tracker = (FaceTracker *) thiz;
+    jbyte *data_ = env->GetByteArrayElements(input_image, 0);
+    Mat src(height + height / 2, width, CV_8UC1, data_);
+    Mat dst;
+    cvtColor(src, dst, COLOR_YUV2BGR_I420);
+    //TODO：很多没有写
+//    env->ReleaseByteArrayElements(data_, data_, 0);
 }
 
 
 static const JNINativeMethod gMethods[] = {
-        {"stringFromJNI", "()Ljava/lang/String;", (void *) stringFromJNI},
+        {"nativeCreateObject", "(Ljava/lang/String;)J", (void *) do_create_obj},
+        {"nativeDestroyObject", "(J)V", (void *) do_destory_obj},
+        {"nativeSetSurface", "(JLandroid/view/Surface;)V", (void *) do_set_surface},
+        {"nativeStart", "(J)V", (void *) do_start},
+        {"nativeStop", "(J)V", (void *) do_stop},
+        {"nativeDetect", "(J[BIII)[B", (void *) do_native_detect}
 };
 
 // 通过JNI_OnLoad函数动态注册
@@ -130,7 +189,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
         return JNI_ERR;
     }
-    jclass clazz = env->FindClass("com/study/ndk35_opencv_study/MainActivity");
+    jclass clazz = env->FindClass("com/study/ndk35_opencv_study/NativeHelper");
     if (clazz == nullptr) {
         return JNI_ERR;
     }
